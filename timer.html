@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Escape Room Timer</title>
+  <style>
+    body {
+      font-family: Nunito, sans-serif;
+      font-size: 24px;
+      color: red;
+      text-align: center;
+      margin: 0;
+      background: black;
+    }
+    #countdown {
+      padding: 20px;
+      font-size: 36px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="countdown">60:00</div>
+  <audio id="alarm" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"></audio>
+
+  <script>
+    const DURATION = 60 * 60; // 60 minutes in seconds
+    const redirectURL = "https://view.genially.com/685856038f02a2a3b61b01ac/presentation/page-82";
+
+    let endTime = localStorage.getItem('escape_timer_end');
+
+    if (!endTime) {
+      const now = Math.floor(Date.now() / 1000);
+      endTime = now + DURATION;
+      localStorage.setItem('escape_timer_end', endTime);
+    }
+
+    const countdown = document.getElementById("countdown");
+    const alarm = document.getElementById("alarm");
+
+    const interval = setInterval(() => {
+      const now = Math.floor(Date.now() / 1000);
+      const remaining = endTime - now;
+
+      if (remaining <= 0) {
+        countdown.innerText = "00:00";
+        alarm.play();
+        clearInterval(interval);
+        localStorage.removeItem('escape_timer_end');
+        window.top.location.href = redirectURL;
+        return;
+      }
+
+      const mins = Math.floor(remaining / 60);
+      const secs = remaining % 60;
+      countdown.innerText = `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+    }, 1000);
+  </script>
+</body>
+</html>
